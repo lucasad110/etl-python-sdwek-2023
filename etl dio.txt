@@ -1,0 +1,32 @@
+import pandas as pd
+import openai
+
+# Leitura do arquivo CSV
+df = pd.read_csv("/fatalities_isr_pse_conflict_2000_to_2023.csv")
+
+# Defina sua chave de API OpenAI
+openai_api_key = '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'
+openai.api_key = openai_api_key
+
+# Função para gerar mensagens
+def generate_ai_news(name):
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a rabbi."
+            },
+            {
+                "role": "user",
+                "content": f"Crie uma mensagem para {name} sobre a importância de descansar no Senhor (máximo de 100 caracteres)"
+            }
+        ]
+    )
+    response = completion.choices[0].message['content']
+    return response
+
+# Itera sobre os nomes do DataFrame
+for name in df['name']:  
+    news = generate_ai_news(name)
+    print(f"Mensagem para {name}: {news}")
